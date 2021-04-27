@@ -34,7 +34,12 @@ local function toggle_inout()
 	end
 end
 
+local function build_and_run()
+	vim.cmd[[<cmd>wa<bar>silent make %:r<bar>silent !./%:r < %:r.in > %:r.out<CR>]]
+end
+
 local functions = {}
 functions.toggle_inout = toggle_inout
+functions.build_and_run = build_and_run
 
 return functions
