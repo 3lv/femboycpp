@@ -24,8 +24,8 @@ local function toggle_inout()
 		close_all(f2)
 	elseif not is_open(f1) and not is_open(f2) then
 		local winnr = vim.fn.bufwinnr(fullfilename)
-		vim.cmd[[bo 40vs %:r.in]]
-		vim.cmd[[bel sp %:r.out]]
+		vim.cmd[[bo 40vs %:r.in|set nu nornu wfw wfh]]
+		vim.cmd[[bel sp %:r.out|set nu nornu wfw wfh]]
 		vim.cmd(winnr .. "wincmd w")
 	elseif is_open(f1) then
 		close_all(f1)
@@ -35,7 +35,7 @@ local function toggle_inout()
 end
 
 local function build_and_run()
-	vim.cmd[[<cmd>wa<bar>silent make %:r<bar>silent !./%:r < %:r.in > %:r.out<CR>]]
+	vim.cmd[[wa|silent make %:r|silent !./%:r < %:r.in > %:r.out]]
 end
 
 local functions = {}
