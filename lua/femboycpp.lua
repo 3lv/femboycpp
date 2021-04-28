@@ -88,8 +88,16 @@ local function toggle_inout()
 	local f1 = f.filewe .. '.in' -- .in file
 	local f2 = f.filewe .. '.out' -- .out file
 	if #vim.fn.win_findbuf(vim.fn.bufnr(f1)) + #vim.fn.win_findbuf(vim.fn.bufnr(f2)) == vim.fn.winnr('$') then
-		print 'Last file(s)'
-		return
+		if vim.fn.winnr('$') == 1 then
+			vim.cmd('e ' .. f.filewe .. '.cpp')
+			toggle_inout()
+			return
+		else
+			vim.cmd('e ' .. f.filewe .. '.cpp')
+			toggle_inout()
+			toggle_inout()
+			return
+		end
 	end
 	if is_open(f1) and is_open(f2) then
 		close_all(f1)
