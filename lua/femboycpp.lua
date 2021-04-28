@@ -1,22 +1,44 @@
-local function get_root_bufid()
+local function get_root_buf()
+	local M = {}
 	buflist = vim.api.nvim_list_bufs()
 	for number, bufid in ipairs(buflist) do
-		if vim.api.nvim_buf_is_valid(bufid) and vim.api.nvim_buf_is_loaded(bufid) then
-			if vim.fn.win_findbuf(bufid)[1] ~= nil then
-				local e = vim.fn.expand('#' .. bufid .. ':e')
-				if e == 'cpp' then
-					return bufid
-				end
+		--if vim.api.nvim_buf_is_valid(bufid) and vim.api.nvim_buf_is_loaded(bufid) then
+		if vim.fn.win_findbuf(bufid)[1] ~= nil then
+			local e = vim.fn.expand('#' .. bufid .. ':e')
+			if e == 'cpp' then
+				M.id = bufid
+				M.visible = true
+				return M
+			end
+		end
+	end
+	for number, bufid in ipairs(buflist) do
+		if vim.fn.win_findbuf(bufid)[1] ~= nil then
+			local e = vim.fn.expand('#' .. bufid .. ':e')
+			if e == 'in' or e == 'out' then
+				M.id = bufid
+				M.visible = true
+				return M
 			end
 		end
 	end
 	for number, bufid in ipairs(buflist) do
 		if vim.api.nvim_buf_is_valid(bufid) and vim.api.nvim_buf_is_loaded(bufid) then
-			if vim.fn.win_findbuf(bufid)[1] ~= nil then
-				local e = vim.fn.expand('#' .. bufid .. ':e')
-				if e == 'in' or e == 'out' then
-					return bufid
-				end
+			local e = vim.fn.expand('#' .. bufid .. ':e')
+			if e == 'cpp' then
+				M.id = bufid
+				M.visible = false
+				return M
+			end
+		end
+	end
+	for number, bufid in ipairs(buflist) do
+		if vim.api.nvim_buf_is_valid(bufid) and vim.api.nvim_buf_is_loaded(bufid) then
+			local e = vim.fn.expand('#' .. bufid .. ':e')
+			if e == 'in' or e == 'out' then
+				M.id = bufid
+				M.visible = false
+				return M
 			end
 		end
 	end
@@ -26,14 +48,19 @@ end
 local function get_root_file()
 	local e = vim.fn.expand('%:e')
 	local c -- filechar
+	local visible = false
 	if e == 'cpp' or e == 'in' or e == 'out' then
 		c = '%'
+		visible = true
 	else
-		c = '#' .. get_root_bufid()
+		buf = get_root_buf()
+		c = '#' .. buf.id
+		visible = buf.visible
 	end
 	M = {}
 	M.file = vim.fn.expand(c)
 	M.filewe = vim.fn.expand(c .. ':r')
+	M.
 	return M
 end
 
@@ -57,11 +84,9 @@ end
 local function toggle_inout()
 	local cur_win = vim.fn.bufwinnr(vim.fn.expand('%')) -- current window
 	local e = vim.fn.expand('%:e') -- extension
-	local f = get_root_file()
-	local file = f.file
-	local filewe = f.filewe
-	local f1 = filewe .. '.in'
-	local f2 = filewe .. '.out'
+	local f = get_root_file() -- the root file with extra informations
+	local f1 = f.filewe .. '.in' -- .in file
+	local f2 = f.filewe .. '.out' -- .out file
 	if is_open(f1) and is_open(f2) then
 		close_all(f1)
 		close_all(f2)
@@ -70,6 +95,9 @@ local function toggle_inout()
 		vim.cmd('bo ' .. '40' .. 'vs ' .. f1 .. opts)
 		vim.cmd('bel sp ' .. f2 .. opts)
 		vim.cmd(cur_win .. "wincmd w")
+		if f.visible == false then
+			vim.cmd('e ' .. f.filewe .. '.cpp')
+		end
 	elseif is_open(f1) then
 		close_all(f1)
 	elseif is_open(f2) then
