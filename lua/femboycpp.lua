@@ -1,7 +1,7 @@
 local function get_root_bufid()
 	buflist = vim.api.nvim_list_bufs()
 	for number, bufid in ipairs(buflist) do
-		if vim.api.nvim_buf_is_valid(bufid) and vim.api..nvim_buf_is_loaded(bufid) then
+		if vim.api.nvim_buf_is_valid(bufid) and vim.api.nvim_buf_is_loaded(bufid) then
 			local e = vim.fn.expand('#' .. bufid .. ':e')
 			if e == 'cpp' then
 				return bufid
@@ -9,7 +9,7 @@ local function get_root_bufid()
 		end
 	end
 	for number, bufid in ipairs(buflist) do
-		if vim.api.nvim_buf_is_valid(bufid) and vim.api..nvim_buf_is_loaded(bufid) then
+		if vim.api.nvim_buf_is_valid(bufid) and vim.api.nvim_buf_is_loaded(bufid) then
 			local e = vim.fn.expand('#' .. bufid .. ':e')
 			if e == 'in' or e == 'out' then
 				return bufid
