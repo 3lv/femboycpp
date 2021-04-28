@@ -74,7 +74,8 @@ local function toggle_inout()
 end
 
 local function build_and_run()
-	vim.cmd[[wa|silent make %:r|silent !./%:r < %:r.in > %:r.out]]
+	local r = get_root_file().filewe -- file name without extension
+	vim.cmd('wa|silent make '..r..'|silent !./'..r..' < '..r..'.in > '..r..'.out')
 end
 
 local functions = {}
