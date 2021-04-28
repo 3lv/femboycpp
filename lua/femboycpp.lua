@@ -1,8 +1,11 @@
-local function get_project_name()
+local function get_root_bufid()
 	buflist = vim.api.nvim_list_bufs()
-	for buf in buflist do
+	for bufid in buflist do
 		if nvim_buf_is_loaded(buf) then
-			return buf
+			--local winid = vim.fn.bufwinid(bufid)
+			if vim.bo[bufid]['filetype'] == 'cpp' then
+				return bufid
+			end
 		end
 	end
 end
@@ -25,15 +28,21 @@ end
 
 
 local function toggle_inout()
-	local fullfilename = vim.fn.expand('%')
-	local filename = vim.fn.expand('%:r') --filename_without_extension
-	local f1 = filename .. '.in'
-	local f2 = filename .. '.out'
+	local e = vim.fn.expand('%:e') -- extension
+	local file
+	local filewe
+	if e == 'cpp' or e == 'in' or e == 'out' then
+		file = vim.fn.expand('%')
+		filewe = vim.fn.expand('%:r') --filename_without_extension
+	end
+
+	local f1 = filewe .. '.in'
+	local f2 = filewe .. '.out'
 	if is_open(f1) and is_open(f2) then
 		close_all(f1)
 		close_all(f2)
 	elseif not is_open(f1) and not is_open(f2) then
-		local winnr = vim.fn.bufwinnr(fullfilename)
+		local winnr = vim.fn.bufwinnr(file)
 		local opts = '|setlocal nu nornu wfw wfh'
 		vim.cmd('bo ' .. '40' .. 'vs ' .. f1 .. opts)
 		vim.cmd('bel sp ' .. f2 .. opts)
