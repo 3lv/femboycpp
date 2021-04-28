@@ -60,7 +60,7 @@ local function get_root_file()
 	M = {}
 	M.file = vim.fn.expand(c)
 	M.filewe = vim.fn.expand(c .. ':r')
-	M.
+	M.visible = visible
 	return M
 end
 
