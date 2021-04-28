@@ -87,6 +87,10 @@ local function toggle_inout()
 	local f = get_root_file() -- the root file with extra informations
 	local f1 = f.filewe .. '.in' -- .in file
 	local f2 = f.filewe .. '.out' -- .out file
+	if #vim.fn.win_findbuf(f1) + #vim.fn.win_findbuf(f1) == vim.fn.winnr('$') then
+		print 'Last file(s)'
+		return
+	end
 	if is_open(f1) and is_open(f2) then
 		close_all(f1)
 		close_all(f2)
