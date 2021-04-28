@@ -18,6 +18,21 @@ local function get_root_bufid()
 	end
 end
 
+
+local function get_root_file()
+	local e = vim.fn.expand('%:e')
+	local c -- filechar
+	if e == 'cpp' or e == 'in' or e == 'out' then
+		c = '%'
+	else
+		c = '#' .. get_root_bufid()
+	end
+	M = {}
+	M.file = vim.fn.expand(c)
+	M.filewe = vim.fn.expand(c .. ':r')
+	return M
+end
+
 local function is_open(filename)
 	local winnr = vim.fn.bufwinnr(filename)
 	if winnr == -1 then
@@ -36,28 +51,21 @@ end
 
 
 local function toggle_inout()
+	local cur_win = vim.fn.bufwinnr(vim.fn.expand('%')) -- current window
 	local e = vim.fn.expand('%:e') -- extension
-	local file
-	local filewe
-	if e == 'cpp' or e == 'in' or e == 'out' then
-		file = vim.fn.expand('%')
-		filewe = vim.fn.expand('%:r') --filename_without_extension
-	else 
-		file = vim.fn.expand('#' .. get_root_bufid())
-		filewe = vim.fn.expand('#' .. get_root_bufid() .. ':r')
-	end
-
+	local f = get_root_file()
+	local file = f.file
+	local filewe = f.filewe
 	local f1 = filewe .. '.in'
 	local f2 = filewe .. '.out'
 	if is_open(f1) and is_open(f2) then
 		close_all(f1)
 		close_all(f2)
 	elseif not is_open(f1) and not is_open(f2) then
-		local winnr = vim.fn.bufwinnr(file)
 		local opts = '|setlocal nu nornu wfw wfh'
 		vim.cmd('bo ' .. '40' .. 'vs ' .. f1 .. opts)
 		vim.cmd('bel sp ' .. f2 .. opts)
-		vim.cmd(winnr .. "wincmd w")
+		vim.cmd(cur_win .. "wincmd w")
 	elseif is_open(f1) then
 		close_all(f1)
 	elseif is_open(f2) then
