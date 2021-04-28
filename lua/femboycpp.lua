@@ -2,8 +2,16 @@ local function get_root_bufid()
 	buflist = vim.api.nvim_list_bufs()
 	for bufid in buflist do
 		if nvim_buf_is_loaded(buf) then
-			--local winid = vim.fn.bufwinid(bufid)
-			if vim.bo[bufid]['filetype'] == 'cpp' then
+			local e = vim.fn.expand('#' .. bufif .. ':e')
+			if e == 'cpp' then
+				return bufid
+			end
+		end
+	end
+	for bufid in buflist do
+		if nvim_buf_is_loaded(buf) then
+			local e = vim.fn.expand('#' .. bufif .. ':e')
+			if e == 'in' or e == 'out' then
 				return bufid
 			end
 		end
@@ -34,6 +42,9 @@ local function toggle_inout()
 	if e == 'cpp' or e == 'in' or e == 'out' then
 		file = vim.fn.expand('%')
 		filewe = vim.fn.expand('%:r') --filename_without_extension
+	else 
+		file = vim.fn.expand('#' .. get_root_bufid())
+		filewe = vim.fn.expand('#' .. get_root_bufid() .. ':r')
 	end
 
 	local f1 = filewe .. '.in'
