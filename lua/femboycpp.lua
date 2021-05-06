@@ -103,7 +103,8 @@ local function toggle_inout()
 		close_all(f1)
 		close_all(f2)
 	elseif not is_open(f1) and not is_open(f2) then
-		local opts = '|setlocal nu nornu wfw wfh'
+		if cpp_win_opts == nil then cpp_win_opts = 'wfw wfh' end
+		opts = '|setlocal ' .. cpp_win_opts
 		vim.cmd('bo ' .. '40' .. 'vs ' .. f1 .. opts)
 		vim.cmd('bel sp ' .. f2 .. opts)
 		vim.cmd(cur_win .. "wincmd w")
