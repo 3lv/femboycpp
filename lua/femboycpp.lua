@@ -42,7 +42,7 @@ local function get_root_buf()
 			end
 		end
 	end
-	return { 0, true }
+	return { id = 0, visible = true }
 end
 
 
@@ -135,6 +135,6 @@ local F = {}
 F.toggle_inout = toggle_inout
 F.build_and_run = build_and_run
 F.setup = setup
-F.root = get_root_buf
+F.root = get_root_file
 
 return F
