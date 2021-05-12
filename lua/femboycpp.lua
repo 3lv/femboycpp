@@ -123,8 +123,23 @@ local function build_and_run()
 	vim.cmd('wa|silent make '..r..'|silent !./'..r..' < '..r..'.in > '..r..'.out')
 end
 
-local functions = {}
-functions.toggle_inout = toggle_inout
-functions.build_and_run = build_and_run
+local function cpp_autocmd()
+	vim.api.nvim_command[[
+	augroup femboycpp
+	autocmd!
+	autocmd FileType cpp nnoremap <silent> <A-4> <cmd>lua require('femboycpp').toggle_inout()<CR>
+	autocmd FileType cpp nnoremap <silent> <A-9> <cmd>lua require('femboycpp').build_and_run()<CR>
+	augroup END
+	]]
+end
+
+local function setup()
+	cpp_autocmd()
+end
+
+local F = {}
+F.toggle_inout = toggle_inout
+F.build_and_run = build_and_run
+F.setup = setup
 
 return functions
