@@ -125,6 +125,13 @@ local function build_and_run()
 end
 
 local function cpp_autocmd()
+	vim.api.nvim_command[[
+	augroup femboycpp
+	autocmd!
+	autocmd FileType cpp nnoremap <A-4> <silent> lua require('femboycpp').toggle_inout()
+	autocmd FileType cpp nnoremap <A-9> <silent> lua require('femboycpp').build_and_run()
+	augroup END
+	]]
 end
 
 local function setup()
@@ -135,6 +142,5 @@ local F = {}
 F.toggle_inout = toggle_inout
 F.build_and_run = build_and_run
 F.setup = setup
-F.root = get_root_file
 
 return F
