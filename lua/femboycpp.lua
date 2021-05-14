@@ -35,15 +35,15 @@ local function toggle_inout()
 	local cur_win = vim.fn.bufwinnr(vim.fn.expand('%')) -- current window
 	local filename = get_root_file() -- the root file with extra informations
 	local filewe = vim.fn.fnamemodify(filename, ':r')
-	local f1 = f.filewe .. '.in' -- .in file
-	local f2 = f.filewe .. '.out' -- .out file
+	local f1 = filewe .. '.in' -- .in file
+	local f2 = filewe .. '.out' -- .out file
 	if #vim.fn.win_findbuf(vim.fn.bufnr(f1)) + #vim.fn.win_findbuf(vim.fn.bufnr(f2)) == vim.fn.winnr('$') then
 		if vim.fn.winnr('$') == 1 then
-			vim.cmd('e ' .. f.filewe .. '.cpp')
+			vim.cmd('e '..filewe..'.cpp')
 			toggle_inout()
 			return
 		else
-			vim.cmd('e ' .. f.filewe .. '.cpp')
+			vim.cmd('e '..filewe..'.cpp')
 			toggle_inout()
 			toggle_inout()
 			return
