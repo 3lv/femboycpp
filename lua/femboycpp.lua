@@ -80,7 +80,7 @@ local function cpp_autocmd()
 	]]
 end
 
-local function setup()
+local function setup( user_config )
 	cpp_autocmd()
 end
 
