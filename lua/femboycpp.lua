@@ -66,7 +66,8 @@ local function toggle_inout()
 end
 
 local function build_and_run()
-	local r = get_root_file().filewe -- file name without extension
+	local file = get_root_file() -- file name without extension
+	local r = vim.fn.fnamemodify(file, ':r')
 	vim.cmd('wa|silent make '..r..'|silent !./'..r..' < '..r..'.in > '..r..'.out')
 end
 
