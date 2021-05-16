@@ -56,7 +56,7 @@ local function toggle_inout()
 		cpp_win_opts = cpp_win_opts or 'wfw wfh'
 		opts = '|setlocal ' .. cpp_win_opts
 		vim.cmd('bo 40vs '..f1..opts)
-		vim.cmd('bel sp '..f1..opts)
+		vim.cmd('bel sp '..f2..opts)
 		vim.cmd(cur_win .. 'wincmd w')
 	elseif is_open(f1) then
 		close_all(f1)
