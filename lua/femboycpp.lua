@@ -35,7 +35,7 @@ local function get_root_file()
 			root_file = { filename = filename, priority = priority };
 		end
 	end
-	return root_file
+	return root_file.filename
 end
 
 local function close_all(filename)
