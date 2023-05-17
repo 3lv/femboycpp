@@ -1,26 +1,41 @@
-local function get_root_file()
-	local M = {}
-	local buflist = vim.api.nvim_list_bufs()
-	local filec
-	for _, v in ipairs(buflist) do
-		local filename = vim.fn.bufname(v)
-		local ext = vim.fn.fnamemodify(filename, ':e')
-		if ext == 'cpp' then
-			return filename
-		end
-		if ext == 'in' or ext == 'out' then
-			filec = filec or filename
-		end
-	end
-	return filec
-end
-
 local function is_open(filename)
 	local winnr = vim.fn.bufwinnr(filename)
 	if winnr == -1 then
 		return false
 	end
 	return true
+end
+
+local function get_root_file()
+	local M = { }
+	local buflist = vim.api.nvim_list_bufs()
+	local root_file = {
+		filename = nil,
+		priority = 0,
+	};
+	for _, v in ipairs(buflist) do
+		local filename = vim.fn.bufname(v)
+		local ext = vim.fn.fnamemodify(filename, ':e')
+		local priority = 0;
+		if ext == 'cpp' or ext ~= 'in' or ext ~= 'out' then
+			if filename == vim.fn.expand('%') then
+				priority = priority + 20
+			end
+			if is_open(filename)  then
+				priority = priority + 10
+			end
+			if ext == 'cpp' then
+				priority = priority + 2
+			end
+			if ext == 'in' or ext == 'out' then
+				priority = priority + 1
+			end
+		end
+		if priority > root_file.priority then
+			root_file = { filename = filename, priority = priority };
+		end
+	end
+	return root_file
 end
 
 local function close_all(filename)
@@ -65,10 +80,15 @@ local function toggle_inout()
 	end
 end
 
-local function build_and_run()
+local function build_and_run_io()
 	local file = get_root_file() -- file name without extension
 	local r = vim.fn.fnamemodify(file, ':r')
 	vim.cmd('wa|silent make '..r..'|silent !./'..r..' < '..r..'.in > '..r..'.out')
+end
+local function build_and_run()
+	local file = get_root_file() -- file name without extension
+	local r = vim.fn.fnamemodify(file, ':r')
+	vim.cmd('wa|silent make '..r..'|silent !./'..r)
 end
 
 local function cpp_autocmd()
@@ -76,7 +96,8 @@ local function cpp_autocmd()
 	augroup femboycpp
 	autocmd!
 	autocmd FileType cpp nnoremap <silent> <A-4> <cmd>lua require('femboycpp').toggle_inout()<CR>
-	autocmd FileType cpp nnoremap <silent> <A-9> <cmd>lua require('femboycpp').build_and_run()<CR>
+	autocmd FileType cpp nnoremap <silent> <A-7> <cmd>lua require('femboycpp').build_and_run_io()<CR>
+	autocmd FileType cpp nnoremap <silent> <A-8> <cmd>lua require('femboycpp').build_and_run()<CR>
 	augroup END
 	]]
 end
@@ -87,6 +108,7 @@ end
 
 local F = {}
 F.toggle_inout = toggle_inout
+F.build_and_run_io = build_and_run_io
 F.build_and_run = build_and_run
 F.setup = setup
 
