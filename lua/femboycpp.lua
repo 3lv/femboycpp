@@ -17,7 +17,7 @@ local function get_root_file()
 		local filename = vim.fn.bufname(v)
 		local ext = vim.fn.fnamemodify(filename, ':e')
 		local priority = 0;
-		if ext == 'cpp' or ext ~= 'in' or ext ~= 'out' then
+		if ext == 'cpp' or ext == 'in' or ext == 'out' then
 			if filename == vim.fn.expand('%') then
 				priority = priority + 20
 			end
